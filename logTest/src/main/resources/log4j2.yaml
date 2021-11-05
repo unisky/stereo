@@ -1,0 +1,40 @@
+Configuration:
+  packages: org.apache.logging.log4j.core
+  status: info
+  strict: true
+
+  properties:
+    property:
+      - name: LOG_PATH
+        value: "/temp/log"
+      - name: LOG_LEVEL
+        value: INFO
+
+  Appenders:
+
+      RollingFile:
+          - name: S
+            filename: "${LOG_PATH}/temp.log"
+            immediateFlush: false
+            filePattern: "${LOG_PATH}/temp.log.%d{yyyy-MM-dd}"
+            PatternLayout:
+                pattern: "%-d{yyyy-MM-dd HH:mm:ss:SSS} %p [%t] %c{1}.%M(%L)  %m%n"
+            Policies:
+                TimeBasedTriggeringPolicy:
+                    interval: 1
+                    modulate: true
+
+            DefaultRolloverStrategy:
+                Delete:
+                    basePath: "${LOG_PATH}"
+                    IfFileName:
+                        glob: "*temp*"
+                    IfAccumulatedFileCount:
+                        exceeds: 7
+
+  Loggers:
+    Root:
+      level: INFO
+      includeLocation: false
+      AppenderRef:
+        - ref: S
